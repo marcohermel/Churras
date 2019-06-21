@@ -1,6 +1,10 @@
 import React from 'react';
 import moment from 'moment'
 import { Button } from 'reactstrap';
+import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
+import { faTrash } from '@fortawesome/free-solid-svg-icons';
+
+
 
 export default props => {
     const renderRows = () => {
@@ -16,8 +20,9 @@ export default props => {
                 <td>{churras.valorSugeridoComBebida}</td>
                 <td>{churras.valorSugeridoSemBebida}</td>
                 <td>
+                  
                     <Button color="btn btn-outline-danger"
-                    onClick={() => props.handleRemove(churras)}>Remover</Button>
+                        onClick={() => props.handleRemove(churras)}>Remover   <FontAwesomeIcon  icon={faTrash} /></Button>
                 </td>
 
             </tr>

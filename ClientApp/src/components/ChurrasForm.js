@@ -3,6 +3,8 @@ import  NumberFormat   from 'react-number-format';
 import DatePicker from "react-datepicker";
 import { Container, Col, Row, FormGroup, Button } from 'reactstrap';
 import InputMask from 'react-input-mask';
+import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
+import { faPlus } from '@fortawesome/free-solid-svg-icons';
 
 export default props => (
     <Container>
@@ -61,7 +63,7 @@ export default props => (
                       decimalScale={2} />
                 </FormGroup>
                 <FormGroup>
-                    <Button color="btn btn-outline-primary" type="submit">Cadastrar</Button>
+                    <Button color="btn btn-outline-primary" type="submit">Cadastrar  <FontAwesomeIcon  icon={faPlus} /></Button>
                     &nbsp;
                     <Button color="btn btn-outline-dark" onClick={props.handleClear}>Limpar</Button>
                 </FormGroup>
