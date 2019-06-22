@@ -3,28 +3,28 @@ import { Layout } from './components/Layout';
 import ChurrasForm from './components/ChurrasForm';
 import ChurrasList from './components/ChurrasList';
 import axios from 'axios';
-import { Col, Row, Card , CardTitle} from "reactstrap";
+import { Col, Row, Card, CardTitle } from "reactstrap";
 
 const URL = 'https://localhost:44392/api/churrascos'
 
 export default class App extends Component {
   constructor(props) {
     super(props)
-    this.handleAdd = this.handleAdd.bind(this);
+    this.handleSave = this.handleSave.bind(this);
     this.handleChange = this.handleChange.bind(this);
     this.handleChangeDatePicker = this.handleChangeDatePicker.bind(this);
     this.handleClear = this.handleClear.bind(this);
     this.handleRemove = this.handleRemove.bind(this);
     this.handleChangeDecimal = this.handleChangeDecimal.bind(this);
+    this.handleGet = this.handleGet.bind(this);
     this.state = {
       churras: this.clearFields,
       churrasList: []
     }
     this.refresh();
   }
-  static displayName = App.name;
-  handleChange(e) {
 
+  handleChange(e) {
     let churras = { ...this.state.churras, [e.target.name]: e.target.value }
     this.setState({ churras: churras });
   }
@@ -33,22 +33,35 @@ export default class App extends Component {
     this.setState({ churras: churras });
   }
   handleChangeDecimal(e) {
-   
-    let churras = { ...this.state.churras, [e.target.name]: e.target.value.replace(",",".") }
+
+    let churras = { ...this.state.churras, [e.target.name]: e.target.value.replace(",", ".") }
     this.setState({ churras: churras });
   }
-  handleAdd(e) {
+  handleGet(churrascoID) {
+    axios.get(`${URL}/${churrascoID}`).then(response => {
+      let churras = response.data;
+      churras.data = new Date(churras.data);
+
+      this.setState({ churras: churras });
+    })
+  }
+  handleSave(e) {
     e.preventDefault();
-    axios.post(URL, this.state.churras)
+    let churras = this.state.churras;
+    if(churras.churrascoID){
+      axios.put(`${URL}/${churras.churrascoID}`, churras)
       .then(() => this.refresh());
+    }else{
+      axios.post(URL, this.state.churras)
+      .then(() => this.refresh());
+    }
   }
   handleClear() {
     let churras = this.clearFields;
     this.setState({ churras: churras });
   }
-
-  handleRemove(churras) {
-    axios.delete(`${URL}/${churras.churrascoID}`)
+  handleRemove(churrascoID) {
+    axios.delete(`${URL}/${churrascoID}`)
       .then(() => this.refresh());
   }
   clearFields = {
@@ -62,36 +75,35 @@ export default class App extends Component {
 
   refresh() {
     axios.get(URL).then(response => {
-      console.log(this.state);
       this.setState({
         ...this.state,
         churrasList: response.data,
         churras: this.clearFields
       })
-
     });
   }
-  handle
+
   render() {
+    let title = this.state.churras.churrascoID ? "Alterar Churrasco" : "Cadastrar Churrasco";
     return (
       <Layout>
         <Row>
           <Col lg="8">
             <Card body>
-
               <ChurrasList
                 list={this.state.churrasList}
-                handleRemove={this.handleRemove} />
-
+                handleRemove={this.handleRemove}
+                handleGet={this.handleGet}
+              />
             </Card>
           </Col>
           <Col lg="4">
             <Card body>
-            <CardTitle>
-              Cadastrar Churrasco
-            </CardTitle>
+              <CardTitle>
+                {title}
+              </CardTitle>
               <ChurrasForm
-                handleAdd={this.handleAdd}
+                handleSave={this.handleSave}
                 handleClear={this.handleClear}
                 handleChange={this.handleChange}
                 handleChangeDatePicker={this.handleChangeDatePicker}
