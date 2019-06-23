@@ -4,12 +4,12 @@ import DatePicker from "react-datepicker";
 import { Container, Col, Row, FormGroup, Button } from 'reactstrap';
 import InputMask from 'react-input-mask';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
-import { faPlus, faPencilAlt } from '@fortawesome/free-solid-svg-icons';
+import { faPlus, faPencilAlt, faEraser } from '@fortawesome/free-solid-svg-icons';
 
 export default props => {
     const renderTextIcon = () => {
         if (props.churras.churrascoID) {
-            return <React.Fragment>Alterar <FontAwesomeIcon icon={faPencilAlt} /></React.Fragment>
+            return <React.Fragment>Salvar <FontAwesomeIcon icon={faPencilAlt} /></React.Fragment>
         } else {
             return <React.Fragment> Cadastrar <FontAwesomeIcon icon={faPlus} /></React.Fragment>
         }
@@ -72,10 +72,13 @@ export default props => {
                                 decimalScale={2} />
                         </FormGroup>
                         <FormGroup>
-                            <Button color="btn btn-outline-primary" type="submit">
+                            <Button color="btn btn-outline-dark" type="submit">
                                 {renderTextIcon()}
                             </Button>
-                            &nbsp;<Button color="btn btn-outline-dark" onClick={props.handleClear}>Limpar</Button>
+                            &nbsp;
+                            <Button color="btn btn-outline-danger" onClick={props.handleClear}>
+                                Cancelar <FontAwesomeIcon icon={faEraser} />
+                            </Button>
                         </FormGroup>
                     </form>
                 </Col>

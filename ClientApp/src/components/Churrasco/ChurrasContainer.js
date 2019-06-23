@@ -1,15 +1,14 @@
 import React, { Component } from 'react';
-import { Layout } from './components/Layout';
-import ChurrasForm from './components/ChurrasForm';
-import ChurrasList from './components/ChurrasList';
+import ChurrasForm from './ChurrasForm';
+import ChurrasList from './ChurrasList';
 import axios from 'axios';
 import { Col, Row, Card, CardTitle } from "reactstrap";
 
 const URL = 'https://localhost:44392/api/churrascos'
 
-export default class App extends Component {
+export default class ChurrasContainer extends Component {
   constructor(props) {
-    super(props)
+    super(props);
     this.handleSave = this.handleSave.bind(this);
     this.handleChange = this.handleChange.bind(this);
     this.handleChangeDatePicker = this.handleChangeDatePicker.bind(this);
@@ -21,7 +20,18 @@ export default class App extends Component {
       churras: this.clearFields,
       churrasList: []
     }
-    this.refresh();
+  }
+  clearFields = {
+    churrascoID: null,
+    data: null,
+    descricao: '',
+    observacao: '',
+    valorSugeridoComBebida: 0,
+    valorSugeridoSemBebida: 0
+  }
+
+  componentDidMount(){
+    this.refreshList();
   }
 
   handleChange(e) {
@@ -33,7 +43,6 @@ export default class App extends Component {
     this.setState({ churras: churras });
   }
   handleChangeDecimal(e) {
-
     let churras = { ...this.state.churras, [e.target.name]: e.target.value.replace(",", ".") }
     this.setState({ churras: churras });
   }
@@ -50,10 +59,10 @@ export default class App extends Component {
     let churras = this.state.churras;
     if(churras.churrascoID){
       axios.put(`${URL}/${churras.churrascoID}`, churras)
-      .then(() => this.refresh());
+      .then(() => this.refreshList());
     }else{
       axios.post(URL, this.state.churras)
-      .then(() => this.refresh());
+      .then(() => this.refreshList());
     }
   }
   handleClear() {
@@ -62,33 +71,22 @@ export default class App extends Component {
   }
   handleRemove(churrascoID) {
     axios.delete(`${URL}/${churrascoID}`)
-      .then(() => this.refresh());
+      .then(() => this.refreshList());
   }
-  clearFields = {
-    churrascoID: null,
-    data: null,
-    descricao: '',
-    observacao: '',
-    valorSugeridoComBebida: 0,
-    valorSugeridoSemBebida: 0
-  }
-
-  refresh() {
+  refreshList() {
     axios.get(URL).then(response => {
       this.setState({
         ...this.state,
         churrasList: response.data,
         churras: this.clearFields
-      })
+      });
     });
   }
-
   render() {
     let title = this.state.churras.churrascoID ? "Alterar Churrasco" : "Cadastrar Churrasco";
-    return (
-      <Layout>
+    return (     
         <Row>
-          <Col lg="8">
+          <Col lg="6">
             <Card body>
               <ChurrasList
                 list={this.state.churrasList}
@@ -97,7 +95,7 @@ export default class App extends Component {
               />
             </Card>
           </Col>
-          <Col lg="4">
+          <Col lg="6">
             <Card body>
               <CardTitle>
                 {title}
@@ -111,8 +109,7 @@ export default class App extends Component {
                 churras={this.state.churras} />
             </Card>
           </Col>
-        </Row>
-      </Layout >
+        </Row>   
     );
   }
 }
