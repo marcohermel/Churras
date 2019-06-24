@@ -3,6 +3,7 @@ import { Layout } from './Layout';
 import { Route } from 'react-router';
 import Churrasco from '../components/Churrasco';
 import ChurrascoDetais from '../components/Churrasco/ChurrasDetails';
+import './custom.css';
 
 export default class App extends Component {
   render() {

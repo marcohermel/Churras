@@ -26,8 +26,9 @@ export default class ChurrasContainer extends Component {
     data: null,
     descricao: '',
     observacao: '',
-    valorSugeridoComBebida: 0,
-    valorSugeridoSemBebida: 0
+    valorSugeridoComBebida: 0.00,
+    valorSugeridoSemBebida: 0.00,
+    participantes: []
   }
 
   componentDidMount(){
@@ -50,7 +51,6 @@ export default class ChurrasContainer extends Component {
     axios.get(`${URL}/${churrascoID}`).then(response => {
       let churras = response.data;
       churras.data = new Date(churras.data);
-
       this.setState({ churras: churras });
     })
   }

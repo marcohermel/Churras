@@ -2,10 +2,9 @@ import React from 'react';
 import moment from 'moment'
 import { Button } from 'reactstrap';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
-import { faTrash, faPen } from '@fortawesome/free-solid-svg-icons';
-
+import { faTrash, faPen, faFileInvoice } from '@fortawesome/free-solid-svg-icons';
+import { Link } from 'react-router-dom';
 export default props => {
-    //const formatDecimalValue = (decimalValue) => decimalValue.toFixed(2).toString().replace(".",",");
     const renderRows = () => {
         const list = props.list || []
         return list.map(churras => (
@@ -17,20 +16,22 @@ export default props => {
                     {moment(churras.data).format("DD/MM/YYYY")}
                 </td>
                 <td>{churras.descricao}</td>
-                {/* <td>{churras.observacao}</td>
-                <td>{formatDecimalValue(churras.valorSugeridoComBebida)}</td>
-                <td>{formatDecimalValue(churras.valorSugeridoSemBebida)}</td> */}
                 <td className="float-right">
-                    <Button color="btn btn-outline-dark btn-sm" onClick={() => props.handleGet(churras.churrascoID)}>
+                    &nbsp;
+                    <Link to={`Details/${churras.churrascoID}`} >
+                        <Button outline size="sm" color="dark">
+                            Detalhes/Participantes <FontAwesomeIcon icon={faFileInvoice} />
+                        </Button>
+                    </Link>
+                    &nbsp;
+                    <Button outline size="sm" color="dark" onClick={() => props.handleGet(churras.churrascoID)}>
                         Alterar <FontAwesomeIcon icon={faPen} />
                     </Button>
                     &nbsp;
-                    <Button color="btn btn-outline-danger btn-sm" onClick={() => props.handleRemove(churras.churrascoID)}>
+                    <Button outline size="sm" color="danger" onClick={() => props.handleRemove(churras.churrascoID)}>
                         Remover <FontAwesomeIcon icon={faTrash} />
                     </Button>
                 </td>
-
-
             </tr>
         ))
     }
@@ -42,7 +43,6 @@ export default props => {
                     <th>Data</th>
                     <th>Descrição</th>
                     <th></th>
-
                 </tr>
             </thead>
             <tbody>

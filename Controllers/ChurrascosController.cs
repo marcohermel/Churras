@@ -2,7 +2,6 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
-using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using Churras.Models;
@@ -31,14 +30,14 @@ namespace Churras.Controllers
         [HttpGet("{id}")]
         public async Task<ActionResult<Churrasco>> GetChurrasco(int id)
         {
-            var churrasco = await _context.Churrascos.FindAsync(id);
+            Churrasco churrasco = await _context.Churrascos.Include(c => c.Participantes).FirstOrDefaultAsync(c => c.ChurrascoID == id);
 
             if (churrasco == null)
             {
                 return NotFound();
             }
 
-            return churrasco;
+            return Ok(churrasco);
         }
 
         // PUT: api/Churrascos/5

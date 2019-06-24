@@ -1,10 +1,10 @@
 import React from 'react';
 import NumberFormat from 'react-number-format';
 import DatePicker from "react-datepicker";
-import { Container, Col, Row, FormGroup, Button } from 'reactstrap';
+import { Container, Col, Row, FormGroup, InputGroup, Button } from 'reactstrap';
 import InputMask from 'react-input-mask';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
-import { faPlus, faPencilAlt, faEraser } from '@fortawesome/free-solid-svg-icons';
+import { faPlus, faPencilAlt, faEraser, faCalendar, faCoins, faFileSignature } from '@fortawesome/free-solid-svg-icons';
 
 export default props => {
     const renderTextIcon = () => {
@@ -22,61 +22,73 @@ export default props => {
                         <FormGroup>
                             <input type="hidden" name="churrascoID" value={props.churras.churrascoID || ""} />
                             <label>Data</label>
-                            <div>
-                                <DatePicker className="form-control" required
+                            <InputGroup>
+                                <FontAwesomeIcon icon={faCalendar} />&nbsp;
+                                <DatePicker required className='form-control  form-control-sm'
                                     customInput={<InputMask mask="99/99/9999"
                                         onChange={props.handleChangeDatePicker} />}
                                     selected={props.churras.data}
                                     onChange={props.handleChangeDatePicker}
                                     dateFormat="dd/MM/yyyy" />
-                            </div>
+                            </InputGroup>
                         </FormGroup>
                         <FormGroup>
                             <label>Descrição</label>
+                            <InputGroup>
+                                <FontAwesomeIcon icon={faFileSignature} />&nbsp;
                             <textarea name='descricao' maxLength="4000" required
-                                className='form-control'
-                                placeholder="descrição"
-                                value={props.churras.descricao}
-                                onChange={props.handleChange} />
+                                    className='form-control  form-control-sm'
+                                    placeholder="descrição"
+                                    value={props.churras.descricao}
+                                    onChange={props.handleChange} />
+                            </InputGroup>
                         </FormGroup>
                         <FormGroup>
                             <label>Observação</label>
+                            <InputGroup>
+                                <FontAwesomeIcon icon={faFileSignature} />&nbsp;
                             <textarea name="observacao" maxLength="4000"
-                                className='form-control'
-                                placeholder="observação"
-                                value={props.churras.observacao}
-                                onChange={props.handleChange} />
+                                    className='form-control  form-control-sm'
+                                    placeholder="observação"
+                                    value={props.churras.observacao}
+                                    onChange={props.handleChange} />
+                            </InputGroup>
                         </FormGroup>
                         <FormGroup>
                             <label> Valor sugerido com bebida </label>
-                            <NumberFormat required
-                                maxLength={8}
-                                fixedDecimalScale
-                                decimalSeparator=","
-                                className='form-control'
-                                name='valorSugeridoComBebida'
-                                onChange={props.handleChangeDecimal}
-                                value={props.churras.valorSugeridoComBebida.toString().replace(".", ",")}
-                                decimalScale={2} />
+                            <InputGroup>
+                                <FontAwesomeIcon icon={faCoins} /> &nbsp; <NumberFormat required
+                                    maxLength={8}
+                                    fixedDecimalScale
+                                    decimalSeparator=","
+                                    className='form-control form-control-sm'
+                                    name='valorSugeridoComBebida'
+                                    onChange={props.handleChangeDecimal}
+                                    value={props.churras.valorSugeridoComBebida.toString().replace(".", ",")}
+                                    decimalScale={2} />
+                            </InputGroup>
                         </FormGroup>
                         <FormGroup>
                             <label>Valor sugerido sem bebida  </label>
+                            <InputGroup>
+                                <FontAwesomeIcon icon={faCoins} /> &nbsp;
                             <NumberFormat required
-                                maxLength={8}
-                                fixedDecimalScale
-                                decimalSeparator=","
-                                className='form-control'
-                                name='valorSugeridoSemBebida'
-                                onChange={props.handleChangeDecimal}
-                                value={props.churras.valorSugeridoSemBebida.toString().replace(".", ",")}
-                                decimalScale={2} />
+                                    maxLength={8}
+                                    fixedDecimalScale
+                                    decimalSeparator=","
+                                    className='form-control form-control-sm'
+                                    name='valorSugeridoSemBebida'
+                                    onChange={props.handleChangeDecimal}
+                                    value={props.churras.valorSugeridoSemBebida.toString().replace(".", ",")}
+                                    decimalScale={2} />
+                            </InputGroup>
                         </FormGroup>
                         <FormGroup>
-                            <Button color="btn btn-outline-dark" type="submit">
+                            <Button outline color="dark" type="submit">
                                 {renderTextIcon()}
                             </Button>
                             &nbsp;
-                            <Button color="btn btn-outline-danger" onClick={props.handleClear}>
+                            <Button outline color="danger" onClick={props.handleClear}>
                                 Cancelar <FontAwesomeIcon icon={faEraser} />
                             </Button>
                         </FormGroup>

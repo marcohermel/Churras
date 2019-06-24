@@ -1,29 +1,35 @@
 import React from 'react';
-import ChurrasForm from './ParticipanteForm';
-import ChurrasList from './ParticipanteList';
 import axios from 'axios';
+import ParticipanteForm from './ParticipanteForm';
+import ParticipanteList from './ParticipanteList';
+import { Col, Row, Card, CardTitle } from "reactstrap";
+
+const URL = 'https://localhost:44392/api/participantes'
+
 export default class ParticipanteContainer extends React.Component {
     constructor(props) {
         super(props);
         this.handleSave = this.handleSave.bind(this);
         this.handleChange = this.handleChange.bind(this);
-        this.handleChangeDatePicker = this.handleChangeDatePicker.bind(this);
+        this.handleOptionChange = this.handleOptionChange.bind(this);
         this.handleClear = this.handleClear.bind(this);
         this.handleRemove = this.handleRemove.bind(this);
         this.handleChangeDecimal = this.handleChangeDecimal.bind(this);
         this.handleGet = this.handleGet.bind(this);
+        this.handleCheckBoxChange = this.handleCheckBoxChange.bind(this);
         this.state = {
             participante: this.clearFields,
-            ParticipanteList: []
+            participanteList: []
         }
     }
     clearFields = {
         participanteID: null,
-        data: null,
-        descricao: '',
+        churrascoID: this.props.churras.churrascoID,
+        nome: '',
+        valorContribuicao: 0.00,
+        comBebida: false,
         observacao: '',
-        valorSugeridoComBebida: 0,
-        valorSugeridoSemBebida: 0
+        pago: true
     }
     componentDidMount() {
         this.refreshList();
@@ -32,9 +38,17 @@ export default class ParticipanteContainer extends React.Component {
         let participante = { ...this.state.participante, [e.target.name]: e.target.value }
         this.setState({ participante: participante });
     }
-    handleChangeDatePicker(date) {
-        let participante = { ...this.state.participante, data: date }
-        this.setState({ participante: participante });
+
+    handleCheckBoxChange(e) {
+        this.setState({
+            participante: { ...this.state.participante, pago: e.target.checked }
+        });
+    }
+    handleOptionChange(e) {
+        let value = (e.target.name === "comBebida" && e.target.checked);
+        this.setState({
+            participante: { ...this.state.participante, comBebida: value }
+        });
     }
     handleChangeDecimal(e) {
         let participante = { ...this.state.participante, [e.target.name]: e.target.value.replace(",", ".") }
@@ -43,8 +57,6 @@ export default class ParticipanteContainer extends React.Component {
     handleGet(participanteID) {
         axios.get(`${URL}/${participanteID}`).then(response => {
             let participante = response.data;
-            participante.data = new Date(participante.data);
-
             this.setState({ participante: participante });
         })
     }
@@ -71,12 +83,43 @@ export default class ParticipanteContainer extends React.Component {
         axios.get(URL).then(response => {
             this.setState({
                 ...this.state,
-                ParticipanteList: response.data,
+                participanteList: response.data,
                 participante: this.clearFields
             });
         });
     }
     render() {
-        return (<h1>teste</h1>)
+        if (this.state.participante) {
+            let title = this.state.participante.participanteID ? "Alterar Participante" : "Cadastrar Participante";
+            return (
+                <Row>
+                    <Col lg="6">
+                        <Card body>
+                            <ParticipanteList
+                                list={this.state.participanteList}
+                                handleRemove={this.handleRemove}
+                                handleGet={this.handleGet} />
+                        </Card>
+                    </Col>
+                    <Col lg="6">
+                        <Card body>
+                            <CardTitle>
+                                {title}
+                            </CardTitle>
+                            <ParticipanteForm
+                                handleSave={this.handleSave}
+                                handleClear={this.handleClear}
+                                handleChange={this.handleChange}
+                                handleOptionChange={this.handleOptionChange}
+                                handleCheckBoxChange={this.handleCheckBoxChange}
+                                handleChangeDecimal={this.handleChangeDecimal}
+                                participante={this.state.participante} />
+                        </Card>
+                    </Col>
+                </Row>
+            );
+        } else {
+            return (<p>Carregando...</p>)
+        }
     }
 }
