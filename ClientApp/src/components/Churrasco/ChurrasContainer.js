@@ -2,7 +2,7 @@ import React, { Component } from 'react';
 import ChurrasForm from './ChurrasForm';
 import ChurrasList from './ChurrasList';
 import axios from 'axios';
-import { Col, Row, Card, CardTitle } from "reactstrap";
+import { Container, Col, Row, Card, CardTitle, CardBody, CardHeader } from "reactstrap";
 
 const URL = 'https://localhost:44392/api/churrascos'
 
@@ -31,7 +31,7 @@ export default class ChurrasContainer extends Component {
     participantes: []
   }
 
-  componentDidMount(){
+  componentDidMount() {
     this.refreshList();
   }
 
@@ -57,12 +57,13 @@ export default class ChurrasContainer extends Component {
   handleSave(e) {
     e.preventDefault();
     let churras = this.state.churras;
-    if(churras.churrascoID){
+    if (churras.churrascoID) {
       axios.put(`${URL}/${churras.churrascoID}`, churras)
-      .then(() => this.refreshList());
-    }else{
+        .then(() => this.refreshList());
+    } else {
+      
       axios.post(URL, this.state.churras)
-      .then(() => this.refreshList());
+        .then(response => this.props.history.push(`/Details/${response.data.churrascoID}`));
     }
   }
   handleClear() {
@@ -84,18 +85,26 @@ export default class ChurrasContainer extends Component {
   }
   render() {
     let title = this.state.churras.churrascoID ? "Alterar Churrasco" : "Cadastrar Churrasco";
-    return (     
+    return (
+      <Container>
         <Row>
-          <Col lg="6">
-            <Card body>
-              <ChurrasList
-                list={this.state.churrasList}
-                handleRemove={this.handleRemove}
-                handleGet={this.handleGet}
-              />
+          <Col>
+            <Card>
+              <CardHeader>
+                Churrascos
+                </CardHeader>
+              <CardBody>
+                <ChurrasList
+                  list={this.state.churrasList}
+                  handleRemove={this.handleRemove}
+                  handleGet={this.handleGet}
+                />
+              </CardBody>
             </Card>
           </Col>
-          <Col lg="6">
+        </Row>
+        <Row className="mt-2">
+          <Col>
             <Card body>
               <CardTitle>
                 {title}
@@ -109,7 +118,13 @@ export default class ChurrasContainer extends Component {
                 churras={this.state.churras} />
             </Card>
           </Col>
-        </Row>   
+          <Col>
+            <figure className="figure">
+              <img src={require("../../images/vader-churras.jpeg")} className="figure-img img-fluid rounded" alt="" />
+            </figure>
+          </Col>
+        </Row>
+      </Container>
     );
   }
 }

@@ -18,6 +18,5 @@ namespace Churras.Models
         [MaxLength(1000)]
         public string Email { get; set; }
         public int ChurrascoID { get; set; }
-        public virtual Churrasco Churrasco { get; set; }
     }
 }

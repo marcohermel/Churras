@@ -38,7 +38,7 @@ namespace Churras.Controllers
                 return NotFound();
             }
 
-            return participante;
+            return Ok(participante);
         }
 
         // PUT: api/Participantes/5

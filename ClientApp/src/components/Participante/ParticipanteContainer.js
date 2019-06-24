@@ -2,7 +2,7 @@ import React from 'react';
 import axios from 'axios';
 import ParticipanteForm from './ParticipanteForm';
 import ParticipanteList from './ParticipanteList';
-import { Col, Row, Card, CardTitle } from "reactstrap";
+import { Container, Col, Row, Card, CardTitle, CardHeader, CardBody } from "reactstrap";
 
 const URL = 'https://localhost:44392/api/participantes'
 
@@ -17,22 +17,23 @@ export default class ParticipanteContainer extends React.Component {
         this.handleChangeDecimal = this.handleChangeDecimal.bind(this);
         this.handleGet = this.handleGet.bind(this);
         this.handleCheckBoxChange = this.handleCheckBoxChange.bind(this);
+        this.getChurras = this.getChurras.bind(this);
         this.state = {
-            participante: this.clearFields,
-            participanteList: []
+            participante: this.clearFields
         }
     }
     clearFields = {
         participanteID: null,
         churrascoID: this.props.churras.churrascoID,
         nome: '',
-        valorContribuicao: 0.00,
+        valorContribuicao: this.props.churras.valorSugeridoSemBebida,
         comBebida: false,
         observacao: '',
         pago: true
     }
-    componentDidMount() {
-        this.refreshList();
+
+    getChurras() {
+        this.props.getChurras();
     }
     handleChange(e) {
         let participante = { ...this.state.participante, [e.target.name]: e.target.value }
@@ -46,8 +47,9 @@ export default class ParticipanteContainer extends React.Component {
     }
     handleOptionChange(e) {
         let value = (e.target.name === "comBebida" && e.target.checked);
+        let valorCont = value ? this.props.churras.valorSugeridoComBebida : this.props.churras.valorSugeridoSemBebida;
         this.setState({
-            participante: { ...this.state.participante, comBebida: value }
+            participante: { ...this.state.participante, comBebida: value, valorContribuicao: valorCont }
         });
     }
     handleChangeDecimal(e) {
@@ -65,10 +67,11 @@ export default class ParticipanteContainer extends React.Component {
         let participante = this.state.participante;
         if (participante.participanteID) {
             axios.put(`${URL}/${participante.participanteID}`, participante)
-                .then(() => this.refreshList());
+                .then(() => this.props.getChurras());
         } else {
             axios.post(URL, this.state.participante)
-                .then(() => this.refreshList());
+                .then(() => this.props.getChurras());
+            this.setState({ participante: this.clearFields });
         }
     }
     handleClear() {
@@ -77,46 +80,61 @@ export default class ParticipanteContainer extends React.Component {
     }
     handleRemove(ParticipanteID) {
         axios.delete(`${URL}/${ParticipanteID}`)
-            .then(() => this.refreshList());
+            .then(() => this.props.getChurras());
     }
-    refreshList() {
-        axios.get(URL).then(response => {
-            this.setState({
-                ...this.state,
-                participanteList: response.data,
-                participante: this.clearFields
-            });
-        });
+
+    renderImg() {
+        if (this.state.participante.comBebida) {
+            return (<figure className="figure">
+                <img src={require("../../images/vader-ceva.jpg")} className="figure-img img-fluid rounded" alt="Os melhores churras da galáxia." />
+                <figcaption className="figure-caption">"Talvez só uma bebidinha."</figcaption>
+            </figure>)
+        } else {
+            return (<figure className="figure">
+                <img src={require("../../images/vader-churras2.jpeg")} className="figure-img img-fluid rounded" alt="As melhores bebidas e churras da galáxia." />
+                <figcaption className="figure-caption">"Não vou beber hoje."</figcaption>
+            </figure>)
+        }
     }
     render() {
         if (this.state.participante) {
             let title = this.state.participante.participanteID ? "Alterar Participante" : "Cadastrar Participante";
             return (
-                <Row>
-                    <Col lg="6">
-                        <Card body>
-                            <ParticipanteList
-                                list={this.state.participanteList}
-                                handleRemove={this.handleRemove}
-                                handleGet={this.handleGet} />
-                        </Card>
-                    </Col>
-                    <Col lg="6">
-                        <Card body>
-                            <CardTitle>
-                                {title}
-                            </CardTitle>
-                            <ParticipanteForm
-                                handleSave={this.handleSave}
-                                handleClear={this.handleClear}
-                                handleChange={this.handleChange}
-                                handleOptionChange={this.handleOptionChange}
-                                handleCheckBoxChange={this.handleCheckBoxChange}
-                                handleChangeDecimal={this.handleChangeDecimal}
-                                participante={this.state.participante} />
-                        </Card>
-                    </Col>
-                </Row>
+                <Container>
+                    <Row>
+                        <Col>
+                            <Card body>
+                                <CardTitle>
+                                    {title}
+                                </CardTitle>
+                                <ParticipanteForm
+                                    handleSave={this.handleSave}
+                                    handleClear={this.handleClear}
+                                    handleChange={this.handleChange}
+                                    handleOptionChange={this.handleOptionChange}
+                                    handleCheckBoxChange={this.handleCheckBoxChange}
+                                    handleChangeDecimal={this.handleChangeDecimal}
+                                    participante={this.state.participante} />
+                            </Card>
+                        </Col>
+                        <Col>
+                            {this.renderImg()}
+                        </Col>
+                    </Row>
+                    <Row>
+                        <Col>
+                            <Card className="border-dark mt-2 mb-2" >
+                                <CardHeader> Participantes </CardHeader>
+                                <CardBody>
+                                    <ParticipanteList
+                                        list={this.props.churras.participantes}
+                                        handleRemove={this.handleRemove}
+                                        handleGet={this.handleGet} />
+                                </CardBody>
+                            </Card>
+                        </Col>
+                    </Row>
+                </Container>
             );
         } else {
             return (<p>Carregando...</p>)

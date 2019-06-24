@@ -10,9 +10,6 @@ export default props => {
         return list.map(churras => (
             <tr key={churras.churrascoID}>
                 <td>
-                    {churras.churrascoID}
-                </td>
-                <td>
                     {moment(churras.data).format("DD/MM/YYYY")}
                 </td>
                 <td>{churras.descricao}</td>
@@ -39,7 +36,6 @@ export default props => {
         <table className="table table-sm table-hover table-striped">
             <thead>
                 <tr className="thead-dark">
-                    <th>ID</th>
                     <th>Data</th>
                     <th>Descrição</th>
                     <th></th>

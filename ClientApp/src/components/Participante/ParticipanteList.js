@@ -4,15 +4,16 @@ import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faTrash, faPen } from '@fortawesome/free-solid-svg-icons';
 
 export default props => {
+    const formatDecimalValue = (decimalValue) => decimalValue.toFixed(2).toString().replace(".", ",");
     const renderRows = () => {
         const list = props.list || []
         return list.map(participante => (
             <tr key={participante.participanteID}>
                 <td>
-                    {participante.participanteID}
+                    {participante.nome}
                 </td>
                 <td>
-                    {participante.valorContribuicao}
+                  R$  {formatDecimalValue(participante.valorContribuicao)}
                 </td>
                 <td>{participante.pago ? "Sim" : "Não"}</td>
                 <td>{participante.comBebida ? "Sim" : "Não"}</td>

@@ -5,7 +5,7 @@ import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faPlus, faPencilAlt, faEraser, faCoins, faFileSignature, faBeer, faUser, faHandHoldingUsd } from '@fortawesome/free-solid-svg-icons';
 export default props => {
    const renderTextIcon = () => {
-      if (props.participante.ParticipanteID) {
+      if (props.participante.participanteID) {
          return <React.Fragment>Salvar <FontAwesomeIcon icon={faPencilAlt} /></React.Fragment>
       } else {
          return <React.Fragment> Cadastrar <FontAwesomeIcon icon={faPlus} /></React.Fragment>
@@ -89,7 +89,7 @@ export default props => {
                         {renderTextIcon()}
                      </Button>
                      &nbsp;
-                            <Button outline color="danger" onClick={props.handleClear}>
+                     <Button outline color="danger" onClick={props.handleClear}>
                         Cancelar <FontAwesomeIcon icon={faEraser} />
                      </Button>
                   </FormGroup>

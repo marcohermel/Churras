@@ -18,6 +18,6 @@ namespace Churras.Models
         public decimal? ValorSugeridoComBebida { get; set; }
         [Column(TypeName = "decimal(8,2)")]
         public decimal? ValorSugeridoSemBebida { get; set; }
-        public virtual ICollection<Participante> Participantes { get; set; }
+        public  IEnumerable<Participante> Participantes { get; set; }
     }
 }
