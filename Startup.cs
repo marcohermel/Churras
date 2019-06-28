@@ -7,6 +7,8 @@ using Microsoft.AspNetCore.SpaServices.ReactDevelopmentServer;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
+using System;
+using System.Threading.Tasks;
 
 namespace Churras
 {
@@ -34,7 +36,7 @@ namespace Churras
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
-        public void Configure(IApplicationBuilder app, IHostingEnvironment env)
+        public void Configure(IApplicationBuilder app, IHostingEnvironment env, IServiceProvider serviceProvider)
         {
             if (env.IsDevelopment())
             {
@@ -67,6 +69,14 @@ namespace Churras
                     spa.UseReactDevelopmentServer(npmScript: "start");
                 }
             });
+
+            CreateDb(serviceProvider);
+        }
+        private void CreateDb(IServiceProvider serviceProvider)
+        {
+            var dbContext = serviceProvider.GetRequiredService<dbContext>();
+            dbContext.Database.Migrate();
+
         }
     }
 }
